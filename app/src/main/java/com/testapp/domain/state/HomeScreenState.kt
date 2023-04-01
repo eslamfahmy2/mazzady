@@ -1,6 +1,9 @@
 package com.testapp.domain.state
 
-import com.testapp.domain.models.Weather
+import com.testapp.data.networking.dto.Category
+import com.testapp.data.networking.dto.Children
+import com.testapp.data.networking.dto.SubCategoryDto
+
 
 enum class SearchWidgetState {
     OPENED,
@@ -12,8 +15,14 @@ enum class SearchSuggestionState {
     CLOSED
 }
 
-sealed class HomeScreenState {
-    object Loading : HomeScreenState()
-    data class Success(val weather: Weather) : HomeScreenState()
-    data class Error(val msg: String?) : HomeScreenState()
+sealed class CategoriesScreenState {
+    object Loading : CategoriesScreenState()
+    data class Success(
+        val categories: List<Category>,
+        val subCategories: List<Children>?,
+        val options: List<SubCategoryDto>?,
+    ) : CategoriesScreenState()
+
+    data class Error(val msg: String?) : CategoriesScreenState()
 }
+

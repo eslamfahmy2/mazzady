@@ -32,7 +32,6 @@ fun CoroutineScope.safeLaunchWithFlow(
         when (exception) {
             //If an exception or error occurs during coroutine execution it will come here.
             // Note that all code in the coroutine after the error instance will not execute!
-
             is NoConnectivityException ->
                 scope.launch {
                     sharedFlow.emit(universalError(UniversalError(exception.localizedMessage)))

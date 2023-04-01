@@ -1,412 +1,180 @@
 package com.testapp.presentation.components
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.HorizontalPagerIndicator
+import com.google.accompanist.pager.rememberPagerState
 import com.testapp.R
-import com.testapp.domain.state.SearchSuggestionState
-import com.testapp.domain.state.SearchWidgetState
-import com.testapp.presentation.components.theme.backgroundClose
 
+
+@ExperimentalFoundationApi
 @Composable
-fun SearchAppBar(
-    text: String,
-    onTextChange: (String) -> Unit,
-    onCloseClicked: () -> Unit,
-    onSearchClicked: (String) -> Unit,
-    searchWidgetState: SearchWidgetState,
-    onSearchTriggered: () -> Unit,
-    searchList: List<String> = listOf(),
-    modifier: Modifier,
-    title: String
-) {
-
-    Box(
-        modifier = modifier
-            .animateContentSize(),
-    ) {
-
-        Text(
-            modifier = Modifier
-                .wrapContentWidth()
-                .padding(top = dimensionResource(id = R.dimen._20sdp))
-                .align(Alignment.TopCenter),
-            text = title,
-            style = MaterialTheme.typography.body1,
-            color = MaterialTheme.colors.onPrimary
-        )
-
-        Surface(
-            modifier = Modifier
-                .wrapContentWidth()
-                .defaultMinSize(minHeight = dimensionResource(id = R.dimen._56sdp))
-                .animateContentSize()
-                .align(Alignment.TopEnd),
-            color = Color.Transparent
-        ) {
-            when (searchWidgetState) {
-                SearchWidgetState.CLOSED -> {
-
-                    IconButton(
-                        onClick = { onSearchTriggered() },
-                        modifier = Modifier
-                            .padding(end = dimensionResource(id = R.dimen._8sdp))
-                            .wrapContentWidth()
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_search),
-                            contentDescription = "Search Icon",
-                            tint = Color.White
-                        )
-                    }
-                }
-                SearchWidgetState.OPENED -> {
-
-                    val focusManager = LocalFocusManager.current
-                    val searchSuggestionOpenState =
-                        remember { mutableStateOf(SearchSuggestionState.CLOSED) }
-
-                    LaunchedEffect(key1 = Unit) {
-                        searchSuggestionOpenState.value = SearchSuggestionState.OPENED
-                    }
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = Color.White,
-                                shape = RoundedCornerShape(
-                                    bottomStart = dimensionResource(id = R.dimen._20sdp),
-                                    bottomEnd = dimensionResource(id = R.dimen._25sdp)
-                                )
-                            )
-                            .padding(top = dimensionResource(id = R.dimen._16sdp)),
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(end = dimensionResource(id = R.dimen._16sdp))
-                        ) {
-
-                            IconButton(
-                                modifier = Modifier
-                                    .alpha(ContentAlpha.medium),
-                                onClick = onCloseClicked
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowBack,
-                                    contentDescription = "Search Icon",
-                                    tint = Color.Black
-                                )
-                            }
-
-                            OutlinedTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                shape = RoundedCornerShape(30),
-                                value = text,
-                                onValueChange = {
-                                    onTextChange(it)
-                                },
-                                placeholder = {
-                                    Text(
-                                        modifier = Modifier
-                                            .alpha(ContentAlpha.medium),
-                                        text = "Search city",
-                                        color = MaterialTheme.colors.onSurface
-                                    )
-                                },
-                                textStyle = TextStyle(
-                                    fontSize = MaterialTheme.typography.body1.fontSize
-                                ),
-                                singleLine = true,
-                                trailingIcon = {
-                                    if (text.isNotEmpty()) {
-                                        IconButton(
-                                            onClick = {
-                                                if (text.isNotEmpty()) {
-                                                    onTextChange("")
-                                                } else {
-                                                    onCloseClicked()
-                                                }
-                                            }
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.Close,
-                                                contentDescription = "Close Icon",
-                                                tint = MaterialTheme.colors.primary
-                                            )
-                                        }
-                                    }
-                                },
-                                keyboardOptions = KeyboardOptions(
-                                    imeAction = ImeAction.Search
-                                ),
-                                keyboardActions = KeyboardActions(
-                                    onSearch = {
-                                        onSearchClicked(text)
-                                        focusManager.clearFocus()
-                                        onCloseClicked()
-                                    }
-                                ),
-                                colors = TextFieldDefaults.textFieldColors(
-                                    backgroundColor = Color.White,
-                                    cursorColor = Color.White.copy(alpha = ContentAlpha.medium),
-                                    focusedIndicatorColor = MaterialTheme.colors.primary,
-                                    unfocusedIndicatorColor = MaterialTheme.colors.primary
-                                )
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen._8sdp)))
-
-                        if (searchSuggestionOpenState.value == SearchSuggestionState.OPENED && text.isNotEmpty() && searchList.isNotEmpty()) {
-
-                            searchList.forEach { searchText ->
-                                SearchListItem(
-                                    searchText = searchText,
-                                    onClicked = {
-                                        onSearchClicked(searchText)
-                                        focusManager.clearFocus()
-                                        onCloseClicked()
-                                    }
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen._4sdp)))
-
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(
-                                        color = backgroundClose,
-                                        shape = RoundedCornerShape(
-                                            bottomStart = dimensionResource(id = R.dimen._20sdp),
-                                            bottomEnd = dimensionResource(id = R.dimen._25sdp)
-                                        )
-                                    ),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    modifier = Modifier
-                                        .padding(dimensionResource(id = R.dimen._6sdp))
-                                        .clickable {
-                                            searchSuggestionOpenState.value =
-                                                SearchSuggestionState.CLOSED
-                                        },
-                                    imageVector = Icons.Filled.KeyboardArrowUp,
-                                    contentDescription = "close search suggestions"
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-fun SearchAppBarTablet(
-    text: String,
-    onTextChange: (String) -> Unit,
-    onCloseClicked: () -> Unit,
-    onSearchClicked: (String) -> Unit,
-    searchWidgetState: SearchWidgetState,
-    onSearchTriggered: () -> Unit,
-    searchList: List<String> = listOf(),
-    modifier: Modifier
-) {
-
-    Box(
-        modifier = modifier
-            .animateContentSize(),
-    ) {
-        Surface(
-            modifier = Modifier
-                .wrapContentWidth()
-                .defaultMinSize(minHeight = dimensionResource(id = R.dimen._56sdp))
-                .animateContentSize()
-                .align(Alignment.TopEnd),
-            color = Color.Transparent
-        ) {
-            when (searchWidgetState) {
-                SearchWidgetState.CLOSED -> {
-                    IconButton(
-                        onClick = { onSearchTriggered() },
-                        modifier = Modifier
-                            .padding(end = dimensionResource(id = R.dimen._8sdp))
-                            .wrapContentWidth()
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_search),
-                            contentDescription = "Search Icon",
-                            tint = Color.White
-                        )
-                    }
-                }
-                SearchWidgetState.OPENED -> {
-
-                    val focusManager = LocalFocusManager.current
-                    val searchSuggestionOpenState =
-                        remember { mutableStateOf(SearchSuggestionState.CLOSED) }
-
-                    LaunchedEffect(key1 = Unit) {
-                        searchSuggestionOpenState.value = SearchSuggestionState.OPENED
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateContentSize()
-                            .padding(dimensionResource(id = R.dimen._16sdp)),
-                        verticalAlignment = Alignment.Top,
-                        horizontalArrangement = Arrangement.End
-                    ) {
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth(.9f)
-                        ) {
-
-                            OutlinedTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                shape = RoundedCornerShape(30),
-                                value = text,
-                                onValueChange = {
-                                    onTextChange(it)
-                                },
-                                placeholder = {
-                                    Text(
-                                        modifier = Modifier
-                                            .alpha(ContentAlpha.medium),
-                                        text = "Search city",
-                                        color = MaterialTheme.colors.onSurface
-                                    )
-                                },
-                                textStyle = TextStyle(
-                                    fontSize = MaterialTheme.typography.body1.fontSize
-                                ),
-                                singleLine = true,
-                                trailingIcon = {
-                                    if (text.isNotEmpty()) {
-                                        IconButton(
-                                            onClick = {
-                                                if (text.isNotEmpty()) {
-                                                    onTextChange("")
-                                                } else {
-                                                    onCloseClicked()
-                                                }
-                                            }
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.Close,
-                                                contentDescription = "Close Icon",
-                                                tint = MaterialTheme.colors.primary
-                                            )
-                                        }
-                                    }
-                                },
-                                keyboardOptions = KeyboardOptions(
-                                    imeAction = ImeAction.Search
-                                ),
-                                keyboardActions = KeyboardActions(
-                                    onSearch = {
-                                        onSearchClicked(text)
-                                        focusManager.clearFocus()
-                                        onCloseClicked()
-                                    }
-                                ),
-                                colors = TextFieldDefaults.textFieldColors(
-                                    backgroundColor = Color.White,
-                                    cursorColor = Color.White.copy(alpha = ContentAlpha.medium),
-                                    focusedIndicatorColor = MaterialTheme.colors.primary,
-                                    unfocusedIndicatorColor = MaterialTheme.colors.primary
-                                )
-                            )
-
-                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen._8sdp)))
-
-                            if (searchSuggestionOpenState.value == SearchSuggestionState.OPENED && text.isNotEmpty() && searchList.isNotEmpty()) {
-                                Column(
-                                    modifier = Modifier.background(
-                                        color = Color.White,
-                                        shape = RoundedCornerShape(dimensionResource(id = R.dimen._15sdp))
-                                    )
-                                ) {
-                                    searchList.forEach { searchText ->
-                                        SearchListItem(
-                                            searchText = searchText,
-                                            onClicked = {
-                                                onSearchClicked(searchText)
-                                                focusManager.clearFocus()
-                                                onCloseClicked()
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                        IconButton(
-                            modifier = Modifier
-                                .padding(top = dimensionResource(id = R.dimen._4sdp))
-                                .weight(1f, true),
-                            onClick = onCloseClicked
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_full_arrow_left),
-                                contentDescription = "back Icon",
-                                tint = Color.White
-                            )
-                        }
-                    }
-                }
-            }
-        }
+fun NoScrollEffect(content: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+        content()
     }
 }
 
 @Composable
-fun SearchListItem(searchText: String, onClicked: () -> Unit) {
-
-    Text(
+fun RatingBarItem(
+    maxRange: Int,
+    rate: Int
+) {
+    Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                onClicked()
+            .wrapContentWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        (0..maxRange).forEach { index ->
+            Icon(
+                imageVector = Icons.Default.Star,
+                tint = if (index <= rate + 1) MaterialTheme.colors.secondary else Color.Gray,
+                contentDescription = "star",
+                modifier = Modifier.size(dimensionResource(id = R.dimen._16sdp))
+            )
+            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen._4sdp)))
+        }
+    }
+}
+
+
+@Composable
+fun TextWithArrow(
+    text: String,
+    icon: ImageVector = Icons.Default.KeyboardArrowRight,
+) {
+    Row(
+        modifier = Modifier.wrapContentWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.body2,
+            color = MaterialTheme.colors.primary
+        )
+        Icon(
+            icon,
+            contentDescription = "arrow",
+            tint = MaterialTheme.colors.primary,
+            modifier = Modifier.width(dimensionResource(id = R.dimen._20sdp))
+        )
+    }
+}
+
+
+@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
+@Composable
+fun ImagePager() {
+
+    val pagerState = rememberPagerState()
+
+    Box(Modifier.fillMaxSize()) {
+
+        NoScrollEffect {
+            HorizontalPager(
+                modifier = Modifier
+                    .fillMaxSize(),
+                count = 4,
+                verticalAlignment = Alignment.Top,
+                state = pagerState
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_sunny),
+                    contentDescription = "image",
+                    modifier = Modifier.fillMaxSize(),
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.ic_baseline_play_circle_outline_24),
+                    contentDescription = "image",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = .4f)),
+                    contentScale = ContentScale.Inside
+                )
+
             }
-            .padding(start = dimensionResource(id = R.dimen._8sdp))
-            .padding(dimensionResource(id = R.dimen._8sdp)),
-        text = searchText.replaceFirstChar { it.uppercase() },
-        style = MaterialTheme.typography.body1,
-        color = MaterialTheme.colors.primary,
-        textAlign = TextAlign.Start
-    )
+        }
+
+        HorizontalPagerIndicator(
+            pagerState = pagerState,
+            modifier = Modifier
+                .padding(bottom = dimensionResource(id = R.dimen._24sdp))
+                .wrapContentSize()
+                .align(Alignment.BottomCenter)
+                .background(
+                    color = Color.Black,
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen._4sdp))
+                )
+                .padding(dimensionResource(id = R.dimen._8sdp)),
+            activeColor = Color.White,
+            inactiveColor = MaterialTheme.colors.onPrimary,
+            indicatorWidth = dimensionResource(id = R.dimen._4sdp),
+            indicatorHeight = dimensionResource(id = R.dimen._4sdp),
+            indicatorShape = CircleShape
+        )
+    }
+}
+
+@Composable
+fun Scrim(
+    color: Color = MaterialTheme.colors.onSurface.copy(alpha = 0.32f),
+    onDismiss: () -> Unit,
+    visible: Boolean
+) {
+    if (color.isSpecified) {
+        val alpha by animateFloatAsState(
+            targetValue = if (visible) 1f else 0f,
+            animationSpec = TweenSpec()
+        )
+        val closeSheet = "2"
+        val dismissModifier = if (visible) {
+            Modifier
+                .pointerInput(onDismiss) { detectTapGestures { onDismiss() } }
+                .semantics(mergeDescendants = true) {
+                    contentDescription = closeSheet
+                    onClick { onDismiss(); true }
+                }
+        } else {
+            Modifier
+        }
+
+        Canvas(
+            Modifier
+                .fillMaxSize()
+                .then(dismissModifier)
+        ) {
+            drawRect(color = color, alpha = alpha)
+        }
+    }
 }

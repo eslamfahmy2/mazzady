@@ -1,7 +1,6 @@
 package com.testapp.presentation.components.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
@@ -36,8 +35,8 @@ fun MyApplicationTestUiAppTheme(
         h2 = TextStyle(
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.SemiBold,
-            fontSize = dimensionResource(id = R.dimen._22ssp).value.sp,
-            lineHeight = dimensionResource(id = R.dimen._22ssp).value.sp,
+            fontSize = dimensionResource(id = R.dimen._18ssp).value.sp,
+            lineHeight = dimensionResource(id = R.dimen._18ssp).value.sp,
             letterSpacing = 0.sp
         ),
         //Large Body
@@ -45,6 +44,13 @@ fun MyApplicationTestUiAppTheme(
         body1 = TextStyle(
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Normal,
+            fontSize = dimensionResource(id = R.dimen._14ssp).value.sp,
+            lineHeight = dimensionResource(id = R.dimen._14ssp).value.sp,
+            letterSpacing = 0.5.sp
+        ),
+        body2 = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.SemiBold,
             fontSize = dimensionResource(id = R.dimen._12ssp).value.sp,
             lineHeight = dimensionResource(id = R.dimen._12ssp).value.sp,
             letterSpacing = 0.5.sp
@@ -54,8 +60,8 @@ fun MyApplicationTestUiAppTheme(
         caption = TextStyle(
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Normal,
-            fontSize = dimensionResource(id = R.dimen._11ssp).value.sp,
-            lineHeight = dimensionResource(id = R.dimen._11ssp).value.sp,
+            fontSize = dimensionResource(id = R.dimen._12ssp).value.sp,
+            lineHeight = dimensionResource(id = R.dimen._12ssp).value.sp,
             letterSpacing = 0.5.sp
         )
     )

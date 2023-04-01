@@ -1,14 +1,12 @@
 package com.testapp.domain.repository
 
 
-
 import com.testapp.data.networking.AppServices
-import com.testapp.domain.mapToDomainModel
-import com.testapp.domain.models.UniversalError
-import com.testapp.domain.models.Weather
+import com.testapp.data.networking.dto.Categories
+import com.testapp.data.networking.dto.OptionsDto
+import com.testapp.data.networking.dto.SubCategoryDto
+import com.testapp.data.networking.wrappers.unwrapResponse
 import com.testapp.domain.state.StateData
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,14 +15,20 @@ import javax.inject.Singleton
 class AuthRepository @Inject constructor(
     private val appServices: AppServices
 ) {
-    fun getWeatherByQuery(location: String): Flow<StateData<Weather>> {
-        return flow {
-            try {
-                val out = appServices.getWeatherByQuery(location).mapToDomainModel()
-                emit(StateData<Weather>().success(out))
-            } catch (e: Exception) {
-                emit(StateData<Weather>().error(UniversalError(e.message)))
-            }
-        }
+
+    suspend fun getCategories(): StateData<Categories> {
+        val categoriesResponse = unwrapResponse(appServices.getAllCategories())
+        return StateData<Categories>().success(categoriesResponse)
+    }
+
+
+    suspend fun getSubCategories(catId: Int): StateData<List<SubCategoryDto>> {
+        val subCategoriesResponse = unwrapResponse(appServices.getSubCategories(13))
+        return StateData<List<SubCategoryDto>>().success(subCategoriesResponse)
+    }
+
+    suspend fun getOptions(option: Int): StateData<List<OptionsDto>> {
+        val optionsResponse = unwrapResponse(appServices.getOptions(53))
+        return StateData<List<OptionsDto>>().success(optionsResponse)
     }
 }

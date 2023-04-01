@@ -1,19 +1,25 @@
 package com.testapp.presentation.components.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.testapp.presentation.home.MainViewModel
 
 @Composable
-fun MainAppGraph(modifier: Modifier = Modifier) {
+fun MainAppGraph(
+    navController: NavHostController = rememberNavController()
+) {
 
-    val navController = rememberNavController()
+    val mainViewModel: MainViewModel = hiltViewModel()
+
     NavHost(
         navController = navController,
-        startDestination = Destinations.HomeScreen.route,
-        modifier = modifier
+        startDestination = Destinations.CategoriesScreen.route,
     ) {
-        homeDestination()
+        categoriesDestination(mainViewModel, navController)
+        tableDestination(mainViewModel, navController)
+        detailsDestination()
     }
 }

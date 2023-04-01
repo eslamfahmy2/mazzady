@@ -1,56 +1,75 @@
 package com.testapp.presentation.components.navigation
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.testapp.domain.state.SearchWidgetState
-import com.testapp.presentation.home.HomeScreen
+import com.testapp.presentation.home.CategoriesScreen
+import com.testapp.presentation.home.DetailsScreen
 import com.testapp.presentation.home.MainViewModel
-import com.testapp.utils.collectAsStateLifecycleAware
-
+import com.testapp.presentation.home.TableScreen
 
 sealed class Destinations(
     val route: String
 ) {
-    object HomeScreen : Destinations("home")
+    object CategoriesScreen : Destinations("categories")
+    object DetailsScreen : Destinations("details")
+    object TableScreen : Destinations("table")
 }
 
 // Adds home screen to `this` NavGraphBuilder
-fun NavGraphBuilder.homeDestination() {
-    composable(Destinations.HomeScreen.route) {
+fun NavGraphBuilder.categoriesDestination(
+    mainViewModel: MainViewModel,
+    navController: NavHostController
+) {
+    composable(Destinations.CategoriesScreen.route) {
         // The ViewModel as a screen level state holder produces the screen
         // UI state and handles business logic for the screen
-        val mainViewModel: MainViewModel = hiltViewModel()
 
-        val uiState = mainViewModel.weatherFlow.collectAsStateLifecycleAware().value
-        val searchBarState by mainViewModel.searchWidgetState
-        val searchText by mainViewModel.searchTextState
+        val uiState = mainViewModel.mainScreenState
+            .collectAsState()
+            .value
 
-        val previousSearchList = remember {
-            mainViewModel.previousSearchList
-        }.filter { it.lowercase().contains(searchText.lowercase()) }
-
-        HomeScreen(
+        LaunchedEffect(true) {
+            mainViewModel.getCategories()
+        }
+        CategoriesScreen(
             uiState = uiState,
-            searchBarState = searchBarState,
-            searchText = searchText,
-            onTextChange = {
-                mainViewModel.updateSearchTextState(newValue = it)
+            onCategorySelected = {
+                mainViewModel.setCategory(it)
             },
-            onCloseClicked = {
-                mainViewModel.updateSearchWidgetState(newValue = SearchWidgetState.CLOSED)
+            onSubCategorySelected = {
+                mainViewModel.setSubCategory(it)
             },
-            onSearchClicked = {
-                mainViewModel.updateSearchTextState(newValue = it)
-                mainViewModel.search()
+            onOptionSelected = { category, isOther, option ->
+                mainViewModel.onOptionSelected(category, isOther, option)
             },
-            onSearchTriggered = {
-                mainViewModel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
+            onSubmit = {
+                navController.navigate(Destinations.TableScreen.route)
             },
-            previousSearchList = previousSearchList
         )
     }
-
 }
+
+// Adds home screen to `this` NavGraphBuilder
+fun NavGraphBuilder.detailsDestination() {
+    composable(Destinations.DetailsScreen.route) {
+        DetailsScreen()
+    }
+}
+
+// Adds table screen to `this` NavGraphBuilder
+fun NavGraphBuilder.tableDestination(
+    mainViewModel: MainViewModel,
+    navController: NavHostController
+) {
+    composable(Destinations.TableScreen.route) {
+        // The ViewModel as a screen level state holder produces the screen
+        // UI state and handles business logic for the screen
+        TableScreen(mainViewModel.getTableData()) {
+            navController.navigate(Destinations.DetailsScreen.route)
+        }
+    }
+}
+
