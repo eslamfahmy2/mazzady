@@ -1,6 +1,6 @@
 # Overview
 
-Weather is an Android application that assists users to get query weather data by city name
+Test application to retrieve data and with dynamic and static view 
 
 ## Technologies
 
@@ -28,3 +28,7 @@ package and is subdivided into packages according to view
 ".data" pancake contains implementation of data source "Retorfit" and date transfer objects
 
 ## Visuals
+![1](https://user-images.githubusercontent.com/74387512/229310753-9fbdf2ee-0055-4a7b-bea5-f64c0b25d347.png)
+![2](https://user-images.githubusercontent.com/74387512/229310758-e2f7d514-13b1-4ff7-bc1e-419b0ba443f6.png)
+![3](https://user-images.githubusercontent.com/74387512/229310763-548bdaa3-8265-4dcf-b24b-da721d361c9a.png)
+![4](https://user-images.githubusercontent.com/74387512/229310769-56db93b9-e8f9-4f7e-a718-44a0f98093f9.png)
