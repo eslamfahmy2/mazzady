@@ -28,15 +28,20 @@ android {
     productFlavors {
         dev {
             dimension "environment"
-            buildConfigField "String", "baseUrl", "\"https://staging.mazaady.com/api/\""
+            buildConfigField "String", "baseUrl", "\"https://staging.mazaady.com/api/v1/\""
+            buildConfigField "String", "privateKey", "\"3%o8i}_;3D4bF]G5@22r2)Et1&mLJ4?\$@+16\""
         }
         stage {
             dimension "environment"
-            buildConfigField "String", "baseUrl", "\"https://staging.mazaady.com/api/\""
+            buildConfigField "String", "baseUrl", "\"https://staging.mazaady.com/api/v1/\""
+            buildConfigField "String", "privateKey", "\"3%o8i}_;3D4bF]G5@22r2)Et1&mLJ4?\$@+16\""
+
         }
         prod {
             dimension "environment"
-            buildConfigField "String", "baseUrl", "\"https://staging.mazaady.com/api/\""
+            buildConfigField "String", "baseUrl", "\"https://staging.mazaady.com/api/v1/\""
+            buildConfigField "String", "privateKey", "\"3%o8i}_;3D4bF]G5@22r2)Et1&mLJ4?\$@+16\""
+
         }
     }
 

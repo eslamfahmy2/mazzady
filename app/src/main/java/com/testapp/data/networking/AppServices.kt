@@ -19,6 +19,6 @@ interface AppServices {
     suspend fun getSubCategories(@Query("cat") cat: Int): Response<WsResponseWrapper<List<SubCategoryDto>>>
 
     @GET("get-options-child/{option}")
-    suspend fun getOptions(@Path("option") option: Int): Response<WsResponseWrapper<List<OptionsDto>>>
+    suspend fun getOptions(@Path("option") option: Int): Response<WsResponseWrapper<List<SubCategoryDto>>>
 
 }

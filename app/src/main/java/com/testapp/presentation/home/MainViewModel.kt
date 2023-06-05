@@ -58,7 +58,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun onOptionSelected(category: SubCategoryDto, other: Boolean, selectedOption: String) {
+    fun onOptionSelected(
+        category: SubCategoryDto,
+        other: Boolean,
+        selectedOption: String,
+        hasChild: Boolean
+    ) {
         viewModelScope.safeLaunchWithFlow(safeLaunchFlow) {
             val new = options.map {
                 if (it.id == category.id) {
@@ -68,7 +73,22 @@ class MainViewModel @Inject constructor(
             }
             options.clear()
             options.addAll(new)
+            if (hasChild) {
+                //todo handle on parent option changed
+                val index = options.indexOfFirst { it.id == category.id } + 1
+                if (index in 0..options.size)
+                    getOptionsChild(index)
+            }
             _homeScreenStateFlow.value = homeSuccessState()
+        }
+    }
+
+    private fun getOptionsChild(index: Int) {
+        viewModelScope.safeLaunchWithFlow(safeLaunchFlow) {
+            authRepository.getOptions().data?.let {
+                options.addAll(index, it)
+                _homeScreenStateFlow.value = homeSuccessState()
+            }
         }
     }
 

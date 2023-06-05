@@ -42,8 +42,8 @@ fun NavGraphBuilder.categoriesDestination(
             onSubCategorySelected = {
                 mainViewModel.setSubCategory(it)
             },
-            onOptionSelected = { category, isOther, option ->
-                mainViewModel.onOptionSelected(category, isOther, option)
+            onOptionSelected = { category, isOther, option  , hasChild->
+                mainViewModel.onOptionSelected(category, isOther, option,hasChild)
             },
             onSubmit = {
                 navController.navigate(Destinations.TableScreen.route)

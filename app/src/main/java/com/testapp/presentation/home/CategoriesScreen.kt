@@ -41,7 +41,7 @@ fun CategoriesScreen(
     onSubmit: () -> Unit,
     onCategorySelected: (Category) -> Unit,
     onSubCategorySelected: (Category) -> Unit,
-    onOptionSelected: (SubCategoryDto, Boolean, String) -> Unit,
+    onOptionSelected: (SubCategoryDto, Boolean, String, Boolean) -> Unit,
 ) {
 
     val scaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState()
@@ -68,9 +68,9 @@ fun CategoriesScreen(
                 onClose = {
                     bottomSheetVisible.value = false
                 },
-                onOptionSelected = { other, option ->
+                onOptionSelected = { other, option, hasChild ->
                     searchableOptions.value?.let {
-                        onOptionSelected(it, other, option)
+                        onOptionSelected(it, other, option, hasChild)
                     }
                 },
             )
@@ -144,7 +144,7 @@ fun CategoriesScreen(
                                     selectedOption = mainOptions.selectedOption ?: "",
                                     isOther = mainOptions.isOther,
                                     onOtherSelected = { it ->
-                                        onOptionSelected(mainOptions, true, it)
+                                        onOptionSelected(mainOptions, true, it, false)
                                     }
                                 )
                                 Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen._4sdp)))
@@ -284,7 +284,7 @@ fun PopupOptionsItem(
     title: String,
     options: List<Option>,
     onClose: () -> Unit,
-    onOptionSelected: (Boolean, String) -> Unit
+    onOptionSelected: (Boolean, String, Boolean) -> Unit
 ) {
 
     var searchText = ""
@@ -381,7 +381,7 @@ fun PopupOptionsItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        onOptionSelected(true, "")
+                        onOptionSelected(true, "", false)
                         onClose()
                     }
                     .padding(dimensionResource(id = R.dimen._8sdp))
@@ -398,7 +398,7 @@ fun PopupOptionsItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            onOptionSelected(false, label.name ?: "")
+                            onOptionSelected(false, label.name ?: "", label.child ?: false)
                             onClose()
                         }
                         .padding(dimensionResource(id = R.dimen._8sdp))

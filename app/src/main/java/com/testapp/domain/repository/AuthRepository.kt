@@ -27,8 +27,8 @@ class AuthRepository @Inject constructor(
         return StateData<List<SubCategoryDto>>().success(subCategoriesResponse)
     }
 
-    suspend fun getOptions(option: Int): StateData<List<OptionsDto>> {
+    suspend fun getOptions(): StateData<List<SubCategoryDto>> {
         val optionsResponse = unwrapResponse(appServices.getOptions(53))
-        return StateData<List<OptionsDto>>().success(optionsResponse)
+        return StateData<List<SubCategoryDto>>().success(optionsResponse)
     }
 }
